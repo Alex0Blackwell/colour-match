@@ -23,7 +23,6 @@ button {
 }
 
 .tile {
-  border: 2px solid white;
   border-radius: 5px;
   height: 100px;
   margin: 10px 0;

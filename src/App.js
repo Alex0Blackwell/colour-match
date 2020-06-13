@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import { Button } from 'react-bootstrap';
 
 
 function Tile(props) {
@@ -21,10 +22,79 @@ function Tile(props) {
 }
 
 
-class Votes extends React.Component {
+
+class Timer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { time: {}, seconds: 10 };
+    this.timer = 0;
+    this.startTimer = this.startTimer.bind(this);
+    this.countDown = this.countDown.bind(this);
+  }
+
+  secondsToTime(secs){
+    let hours = Math.floor(secs / (60 * 60));
+
+    let divisor_for_minutes = secs % (60 * 60);
+    let minutes = Math.floor(divisor_for_minutes / 60);
+
+    let divisor_for_seconds = divisor_for_minutes % 60;
+    let seconds = Math.ceil(divisor_for_seconds);
+
+    let obj = {
+      "h": hours,
+      "m": minutes,
+      "s": seconds
+    };
+    return obj;
+  }
+
+  componentDidMount() {
+    let timeLeftVar = this.secondsToTime(this.state.seconds);
+    this.setState({ time: timeLeftVar });
+  }
+
+  startTimer() {
+    if (this.timer == 0 && this.state.seconds > 0 || this.props.restarted) {
+      this.timer = setInterval(this.countDown, 1000);
+    }
+  }
+
+  countDown() {
+    // Remove one second, set state so a re-render happens.
+    let seconds = this.state.seconds - 1;
+    this.setState({
+      time: this.secondsToTime(seconds),
+      seconds: seconds,
+    });
+
+    // Check if we're at zero.
+    if (seconds == 0) {
+      clearInterval(this.timer);
+      this.props.restart();
+    }
+  }
+
+  render() {
+    this.startTimer();
+    if(this.props.pause) {
+      console.log("in");
+      clearInterval(this.timer);
+    }
+    return(
+      <div>s: {this.state.time.s}</div>
+    );
+  }
+}
+
+
+
+class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      gameStarted: false,
+      win: false,
       roundScore: 0,
       numFlipped: 0,
       colourToMatch: null,
@@ -35,16 +105,13 @@ class Votes extends React.Component {
   }
 
   handleClick(colour, index) {
+    this.state.gameStarted = true;
     this.state.numFlipped++;
     if(this.state.numFlipped === 2) {
       if(this.state.colourToMatch === colour && this.state.indexOfLast !== index) {
         console.log("Nice, that's a match");
-        let newScore = this.state.roundScore++;
-        this.setState({
-          roundScore: newScore,
-        });
+        this.state.roundScore++;
         this.updateColours([index,this.state.indexOfLast], 2);
-        this.renderTiles()
       } else {
         console.log("Not epic, not a match");
       }
@@ -80,9 +147,6 @@ class Votes extends React.Component {
       if(action === 2) {
         // if dead
         newColours[indexChangeArr[i]] = "#3b3b3b";
-      }
-      else if(action === 1) {
-        // if raised
       }
     }
 
@@ -123,7 +187,7 @@ class Votes extends React.Component {
     // console.log(actionArr);
     const colours = this.state.colours;
 
-    const listItems = colours.map((colour, index) =>
+    colours.map((colour, index) =>
       res.push(<Tile
         key={index.toString()}
         onClick={() => this.handleClick(colour, index)}
@@ -136,15 +200,40 @@ class Votes extends React.Component {
   }
 
 
+  restart() {
+    this.setState({
+      gameStarted: false,
+      win: false,
+      roundScore: 0,
+      numFlipped: 0,
+      colourToMatch: null,
+      indexOfLast: null,
+      colours: this.randomiseColours(),
+      tileAction: Array(18).fill(0),
+    });
+  }
+
+
   render() {
+    let score = "Matches left: " + (9-this.state.roundScore);
+    if(this.state.roundScore >= 9) {
+      score = "You Win!"
+      this.state.win = true;
+    }
+    let timer = "s: 10";
+    if(this.state.gameStarted)
+      timer = <Timer pause={this.state.win} restart={() => this.restart()}/>
     return(
       <div className="container">
         <h1> {this.props.title} </h1>
+        <h3> {score} </h3>
+        {timer}
         <div className="row">
         {
           this.renderTiles()
         }
         </div>
+        <Button variant="outline-light" onClick={() => this.restart()}>Restart</Button>{' '}
       </div>
 
     );
@@ -157,7 +246,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Votes
+        <Game
         title={"Match the Colours!"}
         />
       </header>
