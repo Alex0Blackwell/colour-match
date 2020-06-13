@@ -19,7 +19,7 @@ This game spawns in nine different colours onto a grid of eighteen. This means t
 
 > Screen Recording on Mobile
 
-![Screenshot](pictures/mobile.gif "Mobile Layout!")
+![Screenshot](pictures/smallMobile.gif "Mobile Layout!")
 
 ## Technologies
 - **React 16.13**
