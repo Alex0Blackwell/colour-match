@@ -55,7 +55,7 @@ class Timer extends React.Component {
   }
 
   startTimer() {
-    if (this.timer == 0 && this.state.seconds > 0 || this.props.restarted) {
+    if ((this.timer === 0 && this.state.seconds > 0) || this.props.restarted) {
       this.timer = setInterval(this.countDown, 1000);
     }
   }
@@ -69,7 +69,7 @@ class Timer extends React.Component {
     });
 
     // Check if we're at zero.
-    if (seconds == 0) {
+    if (seconds === 0) {
       clearInterval(this.timer);
       this.props.restart();
     }
@@ -78,11 +78,12 @@ class Timer extends React.Component {
   render() {
     this.startTimer();
     if(this.props.pause) {
-      console.log("in");
       clearInterval(this.timer);
     }
     return(
-      <div>s: {this.state.time.s}</div>
+      <div>
+        <p>{this.state.time.s} seconds</p>
+      </div>
     );
   }
 }
@@ -109,11 +110,8 @@ class Game extends React.Component {
     this.state.numFlipped++;
     if(this.state.numFlipped === 2) {
       if(this.state.colourToMatch === colour && this.state.indexOfLast !== index) {
-        console.log("Nice, that's a match");
         this.state.roundScore++;
         this.updateColours([index,this.state.indexOfLast], 2);
-      } else {
-        console.log("Not epic, not a match");
       }
       let newTileAction = this.state.tileAction;
       newTileAction[this.state.indexOfLast] = 0;
@@ -126,10 +124,8 @@ class Game extends React.Component {
       });
     }
     else if(this.state.numFlipped === 1) {
-      console.log("waiting for next...")
       let newTileAction = this.state.tileAction;
       newTileAction[index] = 1;
-      // console.log(tindex, newTileAction);
       this.setState({
         colourToMatch: colour,
         indexOfLast: index,
@@ -184,7 +180,6 @@ class Game extends React.Component {
     let res = [];
 
     let actionArr = this.state.tileAction;
-    // console.log(actionArr);
     const colours = this.state.colours;
 
     colours.map((colour, index) =>
@@ -220,7 +215,7 @@ class Game extends React.Component {
       score = "You Win!"
       this.state.win = true;
     }
-    let timer = "s: 10";
+    let timer = <p>{"10 seconds"}</p>;
     if(this.state.gameStarted)
       timer = <Timer pause={this.state.win} restart={() => this.restart()}/>
     return(

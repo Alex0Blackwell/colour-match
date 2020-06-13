@@ -1,3 +1,23 @@
+@font-face{
+    font-family:colorFont;
+    src:url('fonts/colorFont.ttf')
+}
+@font-face{
+    font-family:mainText;
+    src:url('fonts/mainText.ttf')
+}
+@font-face{
+    font-family:colorFont;
+    font-weight:bold;
+    src:url('fonts/colorFont.ttf')
+}
+@font-face{
+    font-family:mainText;
+    font-weight:bold;
+    src:url('fonts/mainText.ttf')
+}
+
+
 .App {
   text-align: center;
 }
@@ -11,6 +31,15 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+h1 {
+  padding: 15px;
+  font-family:colorFont, sans-serif;
+}
+
+h3, p {
+  font-family:mainText, sans-serif;
 }
 
 button {
