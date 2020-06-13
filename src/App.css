@@ -25,6 +25,35 @@ button {
 .tile {
   border: 2px solid white;
   border-radius: 5px;
-  height: 15vw;
+  height: 100px;
   margin: 10px 0;
+}
+
+.raise {
+  transform: scale(1.2,1.2);
+  -ms-transform: scale(1.2,1.2); /* IE 9 */
+  transition: 0.2s;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 600px) {
+  .tile {
+    height: 50px;
+  }
+  .raise {
+    transform: scale(1.1,1.1);
+    -ms-transform: scale(1.1,1.1); /* IE 9 */
+  }
+}
+@media only screen and (max-width: 760px) {
+  .tile {
+    height: 75px;
+  }
+  .raise {
+    transform: scale(1.2,1.2);
+    -ms-transform: scale(1.2,1.2); /* IE 9 */
+  }
 }
